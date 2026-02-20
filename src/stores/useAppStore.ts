@@ -1,0 +1,170 @@
+import { create } from 'zustand';
+import type { TabId, CharacterConfig, StatusPanelConfig, StatusField, TextEffectRule, FlipCardConfig, ExportSettings } from '@/types';
+
+const uuid = () => crypto.randomUUID();
+
+const defaultCharacter = (): CharacterConfig => ({
+  id: uuid(),
+  name: '角色名',
+  triggerFormat: 'braces_cn',
+  customRegex: '',
+  bubbleBgColor: 'rgba(255,255,255,0.15)',
+  useGradient: false,
+  gradientColor2: '#a855f7',
+  gradientDirection: '135deg',
+  showBorder: true,
+  borderColor: 'rgba(255,255,255,0.2)',
+  borderRadius: 12,
+  showShadow: true,
+  shadowColor: 'rgba(0,0,0,0.2)',
+  shadowBlur: 10,
+  maxWidth: 100,
+  padding: 12,
+  align: 'left',
+  nameColor: '#00e5ff',
+  nameFontSize: 14,
+  nameBold: true,
+  showAvatar: true,
+  textColor: '#e0e0e0',
+  textFontSize: 14,
+  lineHeight: 1.6,
+});
+
+const defaultField = (): StatusField => ({
+  id: uuid(),
+  name: '字段名',
+  type: 'text',
+  group: '基本信息',
+});
+
+const defaultStatusPanel = (): StatusPanelConfig => ({
+  title: '角色状态',
+  fields: [
+    { id: uuid(), name: '时间', type: 'text', group: '基本信息' },
+    { id: uuid(), name: '地点', type: 'text', group: '基本信息' },
+    { id: uuid(), name: '服装', type: 'text', group: '外观' },
+    { id: uuid(), name: '心情', type: 'badge', group: '状态' },
+  ],
+  columns: 2,
+  bgColor: 'rgba(255,255,255,0.08)',
+  showBorder: true,
+  borderColor: 'rgba(255,255,255,0.2)',
+  borderRadius: 12,
+  valueColor: '#00e5ff',
+  labelColor: '#ffffff',
+  showGroupTitle: true,
+});
+
+const defaultTextEffect = (): TextEffectRule => ({
+  id: uuid(),
+  name: '心理活动',
+  matchPattern: 'asterisk',
+  customRegex: '',
+  color: '#999999',
+  fontSize: 14,
+  italic: false,
+  bold: false,
+  opacity: 0.8,
+  showBg: false,
+  bgColor: 'rgba(255,255,255,0.1)',
+});
+
+const defaultFlipCard = (): FlipCardConfig => ({
+  frontTag: 'system-card',
+  backTag: 'state',
+  numberTag: 'Number-of-layers',
+  frontBg1: '#0A1B3D',
+  frontBg2: '#1C3F8C',
+  frontGradientDir: '135deg',
+  backBg1: '#1a0a3d',
+  backBg2: '#3d1c8c',
+  backGradientDir: '135deg',
+  textColor: '#ffffff',
+  fontSize: 14,
+  borderRadius: 10,
+  padding: 12,
+  flipHint: '👆点击翻面',
+});
+
+interface AppState {
+  activeTab: TabId;
+  setActiveTab: (tab: TabId) => void;
+  characters: CharacterConfig[];
+  addCharacter: () => void;
+  updateCharacter: (id: string, updates: Partial<CharacterConfig>) => void;
+  removeCharacter: (id: string) => void;
+  setCharacters: (chars: CharacterConfig[]) => void;
+  statusPanel: StatusPanelConfig;
+  updateStatusPanel: (updates: Partial<StatusPanelConfig>) => void;
+  addField: () => void;
+  updateField: (id: string, updates: Partial<StatusField>) => void;
+  removeField: (id: string) => void;
+  setStatusPanel: (config: StatusPanelConfig) => void;
+  textEffects: TextEffectRule[];
+  addTextEffect: () => void;
+  updateTextEffect: (id: string, updates: Partial<TextEffectRule>) => void;
+  removeTextEffect: (id: string) => void;
+  setTextEffects: (effects: TextEffectRule[]) => void;
+  flipCard: FlipCardConfig;
+  updateFlipCard: (updates: Partial<FlipCardConfig>) => void;
+  setFlipCard: (config: FlipCardConfig) => void;
+  exportSettings: ExportSettings;
+  updateExportSettings: (updates: Partial<ExportSettings>) => void;
+}
+
+export const useAppStore = create<AppState>((set) => ({
+  activeTab: 'dialog',
+  setActiveTab: (tab) => set({ activeTab: tab }),
+
+  characters: [defaultCharacter()],
+  addCharacter: () => set((s) => ({ characters: [...s.characters, defaultCharacter()] })),
+  updateCharacter: (id, updates) => set((s) => ({
+    characters: s.characters.map(c => c.id === id ? { ...c, ...updates } : c),
+  })),
+  removeCharacter: (id) => set((s) => ({
+    characters: s.characters.filter(c => c.id !== id),
+  })),
+  setCharacters: (chars) => set({ characters: chars }),
+
+  statusPanel: defaultStatusPanel(),
+  updateStatusPanel: (updates) => set((s) => ({
+    statusPanel: { ...s.statusPanel, ...updates },
+  })),
+  addField: () => set((s) => ({
+    statusPanel: { ...s.statusPanel, fields: [...s.statusPanel.fields, defaultField()] },
+  })),
+  updateField: (id, updates) => set((s) => ({
+    statusPanel: {
+      ...s.statusPanel,
+      fields: s.statusPanel.fields.map(f => f.id === id ? { ...f, ...updates } : f),
+    },
+  })),
+  removeField: (id) => set((s) => ({
+    statusPanel: {
+      ...s.statusPanel,
+      fields: s.statusPanel.fields.filter(f => f.id !== id),
+    },
+  })),
+  setStatusPanel: (config) => set({ statusPanel: config }),
+
+  textEffects: [defaultTextEffect()],
+  addTextEffect: () => set((s) => ({ textEffects: [...s.textEffects, defaultTextEffect()] })),
+  updateTextEffect: (id, updates) => set((s) => ({
+    textEffects: s.textEffects.map(e => e.id === id ? { ...e, ...updates } : e),
+  })),
+  removeTextEffect: (id) => set((s) => ({
+    textEffects: s.textEffects.filter(e => e.id !== id),
+  })),
+  setTextEffects: (effects) => set({ textEffects: effects }),
+
+  flipCard: defaultFlipCard(),
+  updateFlipCard: (updates) => set((s) => ({
+    flipCard: { ...s.flipCard, ...updates },
+  })),
+  setFlipCard: (config) => set({ flipCard: config }),
+
+  exportSettings: { placement: [2], markdownOnly: true, runOnEdit: true },
+  updateExportSettings: (updates) => set((s) => ({
+    exportSettings: { ...s.exportSettings, ...updates },
+  })),
+}));
