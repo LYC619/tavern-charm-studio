@@ -1,0 +1,105 @@
+export type TabId = 'dialog' | 'status' | 'textEffect' | 'flipCard' | 'export';
+export type TriggerFormat = 'braces_cn' | 'braces_en' | 'japanese' | 'cn_quotes' | 'custom';
+export type FieldType = 'text' | 'progress' | 'badge';
+export type MatchPattern = 'asterisk' | 'cn_parens' | 'brackets' | 'strikethrough' | 'custom';
+export type Alignment = 'left' | 'center' | 'right';
+
+export interface CharacterConfig {
+  id: string;
+  name: string;
+  triggerFormat: TriggerFormat;
+  customRegex: string;
+  bubbleBgColor: string;
+  useGradient: boolean;
+  gradientColor2: string;
+  gradientDirection: string;
+  showBorder: boolean;
+  borderColor: string;
+  borderRadius: number;
+  showShadow: boolean;
+  shadowColor: string;
+  shadowBlur: number;
+  maxWidth: number;
+  padding: number;
+  align: Alignment;
+  nameColor: string;
+  nameFontSize: number;
+  nameBold: boolean;
+  showAvatar: boolean;
+  textColor: string;
+  textFontSize: number;
+  lineHeight: number;
+}
+
+export interface StatusField {
+  id: string;
+  name: string;
+  type: FieldType;
+  group: string;
+}
+
+export interface StatusPanelConfig {
+  title: string;
+  fields: StatusField[];
+  columns: number;
+  bgColor: string;
+  showBorder: boolean;
+  borderColor: string;
+  borderRadius: number;
+  valueColor: string;
+  labelColor: string;
+  showGroupTitle: boolean;
+}
+
+export interface TextEffectRule {
+  id: string;
+  name: string;
+  matchPattern: MatchPattern;
+  customRegex: string;
+  color: string;
+  fontSize: number;
+  italic: boolean;
+  bold: boolean;
+  opacity: number;
+  showBg: boolean;
+  bgColor: string;
+}
+
+export interface FlipCardConfig {
+  frontTag: string;
+  backTag: string;
+  numberTag: string;
+  frontBg1: string;
+  frontBg2: string;
+  frontGradientDir: string;
+  backBg1: string;
+  backBg2: string;
+  backGradientDir: string;
+  textColor: string;
+  fontSize: number;
+  borderRadius: number;
+  padding: number;
+  flipHint: string;
+}
+
+export interface ExportSettings {
+  placement: number[];
+  markdownOnly: boolean;
+  runOnEdit: boolean;
+}
+
+export interface ScriptEntry {
+  id: string;
+  scriptName: string;
+  findRegex: string;
+  replaceString: string;
+  trimStrings: string[];
+  placement: number[];
+  disabled: boolean;
+  markdownOnly: boolean;
+  promptOnly: boolean;
+  runOnEdit: boolean;
+  substituteRegex: boolean;
+  minDepth: null;
+  maxDepth: null;
+}
