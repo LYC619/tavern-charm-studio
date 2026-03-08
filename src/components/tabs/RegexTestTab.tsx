@@ -66,18 +66,19 @@ export const RegexTestTab = () => {
     const scripts: { script: ScriptEntry; source: string }[] = [];
 
     textEffects.forEach(rule => {
-      if (rule.name) scripts.push({ script: buildTextEffectScript(rule, exportSettings), source: '✨ 文字特效' });
+      if (rule.name) try { scripts.push({ script: buildTextEffectScript(rule, exportSettings), source: '✨ 文字特效' }); } catch { /* skip */ }
     });
     characters.forEach(char => {
-      if (char.name) scripts.push({ script: buildDialogScript(char, exportSettings), source: '🎨 对话气泡' });
+      if (char.name) try { scripts.push({ script: buildDialogScript(char, exportSettings), source: '🎨 对话气泡' }); } catch { /* skip */ }
     });
-    const sepScript = buildSeparatorScript(formatPrompt.paragraphSeparator, formatPrompt.customSeparator, exportSettings);
-    if (sepScript) scripts.push({ script: sepScript, source: '📝 段落分隔符' });
+    try {
+      const sepScript = buildSeparatorScript(formatPrompt.paragraphSeparator, formatPrompt.customSeparator, exportSettings);
+      if (sepScript) scripts.push({ script: sepScript, source: '📝 段落分隔符' });
+    } catch { /* skip */ }
     if (statusPanel.fields.length > 0) {
-      const s = buildStatusScript(statusPanel, exportSettings);
-      if (s) scripts.push({ script: s, source: '📊 状态面板' });
+      try { const s = buildStatusScript(statusPanel, exportSettings); if (s) scripts.push({ script: s, source: '📊 状态面板' }); } catch { /* skip */ }
     }
-    scripts.push({ script: buildFlipCardScript(flipCard, exportSettings), source: '📑 翻页卡片' });
+    try { scripts.push({ script: buildFlipCardScript(flipCard, exportSettings), source: '📑 翻页卡片' }); } catch { /* skip */ }
 
     return scripts;
   }, [characters, statusPanel, textEffects, flipCard, exportSettings, formatPrompt]);
