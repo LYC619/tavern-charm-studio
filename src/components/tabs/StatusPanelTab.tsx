@@ -93,6 +93,13 @@ export const StatusPanelTab = () => {
   const { statusPanel, updateStatusPanel, addField, updateField, removeField, getGroupConfig, updateGroupConfig } = useAppStore();
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
   const [showStyleSettings, setShowStyleSettings] = useState(false);
+  const [sampleValues, setSampleValues] = useState<Record<string, string>>({ ...DEFAULT_SAMPLE_VALUES });
+
+  const updateSampleValue = useCallback((name: string, val: string) => {
+    setSampleValues(prev => ({ ...prev, [name]: val }));
+  }, []);
+
+  const getSample = (name: string) => sampleValues[name] || DEFAULT_SAMPLE_VALUES[name] || '示例值';
 
   const toggleGroup = (g: string) => {
     setCollapsedGroups(prev => {
