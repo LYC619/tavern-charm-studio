@@ -317,7 +317,7 @@ export const GLOBAL_PRESETS: GlobalPreset[] = [
         { id: uuid(), name: '好感度', type: 'text', group: '日记' },
       ],
       columns: 2,
-      bgColor: 'linear-gradient(135deg, #fff5f5, #fdf2f8)',
+      bgColor: '#fff5f5',
       showBorder: true,
       borderColor: '#fbcfe8',
       borderRadius: 16,
