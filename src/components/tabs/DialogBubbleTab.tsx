@@ -56,6 +56,7 @@ function hashColor(name: string): string {
 export const DialogBubbleTab = () => {
   const { characters, addCharacter, updateCharacter, removeCharacter } = useAppStore();
   const [expandedId, setExpandedId] = useState<string | null>(characters[0]?.id ?? null);
+  const [showAdvanced, setShowAdvanced] = useState<Record<string, boolean>>({});
 
   const applyPreset = (presetIndex: number) => {
     const updates = dialogPresets[presetIndex].apply();
@@ -143,6 +144,8 @@ export const DialogBubbleTab = () => {
       </div>
     );
   };
+
+  const toggleAdvanced = (id: string) => setShowAdvanced(prev => ({ ...prev, [id]: !prev[id] }));
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -263,54 +266,70 @@ export const DialogBubbleTab = () => {
                       )}
                     </div>
 
-                    {/* Card-specific styles */}
-                    {char.bubblePreset === 'card' && (
-                      <div className="space-y-3 pt-2 border-t border-border">
-                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">卡片样式详细设置</h4>
-                        <ColorPicker label="背景颜色" value={char.bubbleBgColor} onChange={(v) => updateCharacter(char.id, { bubbleBgColor: v })} />
-                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <input type="checkbox" checked={char.useGradient} onChange={(e) => updateCharacter(char.id, { useGradient: e.target.checked })} className="accent-primary" />
-                          使用渐变
-                        </label>
-                        {char.useGradient && <ColorPicker label="渐变色2" value={char.gradientColor2} onChange={(v) => updateCharacter(char.id, { gradientColor2: v })} />}
-                        <SliderWithLabel label="圆角" value={char.borderRadius} onChange={(v) => updateCharacter(char.id, { borderRadius: v })} min={0} max={30} unit="px" />
-                        <SliderWithLabel label="内边距" value={char.padding} onChange={(v) => updateCharacter(char.id, { padding: v })} min={4} max={24} unit="px" />
-                        <SliderWithLabel label="最大宽度" value={char.maxWidth} onChange={(v) => updateCharacter(char.id, { maxWidth: v })} min={30} max={100} unit="%" />
-                        <div>
-                          <label className="text-xs text-muted-foreground mb-1 block">对齐方式</label>
-                          <select value={char.align} onChange={(e) => updateCharacter(char.id, { align: e.target.value as any })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground">
-                            {ALIGN_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                          </select>
-                        </div>
-                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <input type="checkbox" checked={char.showBorder} onChange={(e) => updateCharacter(char.id, { showBorder: e.target.checked })} className="accent-primary" />
-                          显示边框
-                        </label>
-                        {char.showBorder && <ColorPicker label="边框颜色" value={char.borderColor} onChange={(v) => updateCharacter(char.id, { borderColor: v })} />}
-                        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <input type="checkbox" checked={char.showShadow} onChange={(e) => updateCharacter(char.id, { showShadow: e.target.checked })} className="accent-primary" />
-                          显示阴影
-                        </label>
-                        {char.showShadow && (
-                          <>
-                            <ColorPicker label="阴影颜色" value={char.shadowColor} onChange={(v) => updateCharacter(char.id, { shadowColor: v })} />
-                            <SliderWithLabel label="模糊度" value={char.shadowBlur} onChange={(v) => updateCharacter(char.id, { shadowBlur: v })} min={0} max={30} unit="px" />
-                          </>
-                        )}
-                      </div>
-                    )}
+                    {/* Advanced options - collapsed by default */}
+                    <div className="pt-2 border-t border-border">
+                      <button
+                        onClick={() => toggleAdvanced(char.id)}
+                        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full"
+                      >
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showAdvanced[char.id] ? 'rotate-0' : '-rotate-90'}`} />
+                        高级选项
+                        <span className="text-[10px] ml-1 opacity-60">可选 · 不调整也能正常使用</span>
+                      </button>
 
-                    {/* Text styles */}
-                    <div className="space-y-3 pt-2 border-t border-border">
-                      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">文字样式</h4>
-                      <SliderWithLabel label="角色名字号" value={char.nameFontSize} onChange={(v) => updateCharacter(char.id, { nameFontSize: v })} min={10} max={20} unit="px" />
-                      <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <input type="checkbox" checked={char.nameBold} onChange={(e) => updateCharacter(char.id, { nameBold: e.target.checked })} className="accent-primary" />
-                        角色名加粗
-                      </label>
-                      <ColorPicker label="对话文字颜色" value={char.textColor} onChange={(v) => updateCharacter(char.id, { textColor: v })} />
-                      <SliderWithLabel label="对话字号" value={char.textFontSize} onChange={(v) => updateCharacter(char.id, { textFontSize: v })} min={12} max={20} unit="px" />
-                      <SliderWithLabel label="行高" value={char.lineHeight} onChange={(v) => updateCharacter(char.id, { lineHeight: v })} min={1.2} max={2.2} step={0.1} />
+                      {showAdvanced[char.id] && (
+                        <div className="space-y-3 pt-3">
+                          {/* Card-specific styles */}
+                          {char.bubblePreset === 'card' && (
+                            <div className="space-y-3">
+                              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">卡片样式详细设置</h4>
+                              <ColorPicker label="背景颜色" value={char.bubbleBgColor} onChange={(v) => updateCharacter(char.id, { bubbleBgColor: v })} />
+                              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <input type="checkbox" checked={char.useGradient} onChange={(e) => updateCharacter(char.id, { useGradient: e.target.checked })} className="accent-primary" />
+                                使用渐变
+                              </label>
+                              {char.useGradient && <ColorPicker label="渐变色2" value={char.gradientColor2} onChange={(v) => updateCharacter(char.id, { gradientColor2: v })} />}
+                              <SliderWithLabel label="圆角" value={char.borderRadius} onChange={(v) => updateCharacter(char.id, { borderRadius: v })} min={0} max={30} unit="px" />
+                              <SliderWithLabel label="内边距" value={char.padding} onChange={(v) => updateCharacter(char.id, { padding: v })} min={4} max={24} unit="px" />
+                              <SliderWithLabel label="最大宽度" value={char.maxWidth} onChange={(v) => updateCharacter(char.id, { maxWidth: v })} min={30} max={100} unit="%" />
+                              <div>
+                                <label className="text-xs text-muted-foreground mb-1 block">对齐方式</label>
+                                <select value={char.align} onChange={(e) => updateCharacter(char.id, { align: e.target.value as any })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground">
+                                  {ALIGN_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                              </div>
+                              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <input type="checkbox" checked={char.showBorder} onChange={(e) => updateCharacter(char.id, { showBorder: e.target.checked })} className="accent-primary" />
+                                显示边框
+                              </label>
+                              {char.showBorder && <ColorPicker label="边框颜色" value={char.borderColor} onChange={(v) => updateCharacter(char.id, { borderColor: v })} />}
+                              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <input type="checkbox" checked={char.showShadow} onChange={(e) => updateCharacter(char.id, { showShadow: e.target.checked })} className="accent-primary" />
+                                显示阴影
+                              </label>
+                              {char.showShadow && (
+                                <>
+                                  <ColorPicker label="阴影颜色" value={char.shadowColor} onChange={(v) => updateCharacter(char.id, { shadowColor: v })} />
+                                  <SliderWithLabel label="模糊度" value={char.shadowBlur} onChange={(v) => updateCharacter(char.id, { shadowBlur: v })} min={0} max={30} unit="px" />
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Text styles */}
+                          <div className="space-y-3">
+                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">文字样式</h4>
+                            <SliderWithLabel label="角色名字号" value={char.nameFontSize} onChange={(v) => updateCharacter(char.id, { nameFontSize: v })} min={10} max={20} unit="px" />
+                            <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <input type="checkbox" checked={char.nameBold} onChange={(e) => updateCharacter(char.id, { nameBold: e.target.checked })} className="accent-primary" />
+                              角色名加粗
+                            </label>
+                            <ColorPicker label="对话文字颜色" value={char.textColor} onChange={(v) => updateCharacter(char.id, { textColor: v })} />
+                            <SliderWithLabel label="对话字号" value={char.textFontSize} onChange={(v) => updateCharacter(char.id, { textFontSize: v })} min={12} max={20} unit="px" />
+                            <SliderWithLabel label="行高" value={char.lineHeight} onChange={(v) => updateCharacter(char.id, { lineHeight: v })} min={1.2} max={2.2} step={0.1} />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}

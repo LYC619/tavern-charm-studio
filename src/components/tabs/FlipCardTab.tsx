@@ -38,13 +38,13 @@ function getTypographyStyle(t: TypographyConfig): React.CSSProperties {
   };
 }
 
-// Mini preview lines for preset cards — show bg + text color
+// Mini preview lines for preset cards
 function PresetMiniPreview({ preset }: { preset: TypographyConfig }) {
   const indent = preset.textIndent;
   const gap = Math.max(2, preset.paragraphSpacing / 3);
-  const lineColor = preset.textColor.replace(/[\d.]+\)$/, '0.35)').replace('#', '');
-  const bgIsHex = preset.frontBg.startsWith('#');
-  const barColor = bgIsHex ? preset.textColor.replace(/[\d.]+\)$/, '0.3)') : 'rgba(255,255,255,0.2)';
+  const barColor = preset.frontBg.startsWith('#')
+    ? preset.textColor.replace(/[\d.]+\)$/, '0.3)')
+    : 'rgba(255,255,255,0.2)';
   return (
     <div
       className="mt-2 rounded p-1.5"
@@ -85,6 +85,9 @@ export const FlipCardTab = () => {
         {/* Tag config */}
         <div className="glass-panel p-4 space-y-3">
           <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">触发标签配置</h4>
+          <p className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 leading-relaxed">
+            💡 这些标签名需要和格式提示词中的标签一致。如果使用默认值，格式提示词会自动匹配，无需修改。
+          </p>
           <div className="space-y-3">
             <div>
               <label className="text-xs text-muted-foreground mb-1 block">正面内容标签名</label>
@@ -98,32 +101,6 @@ export const FlipCardTab = () => {
               <label className="text-xs text-muted-foreground mb-1 block">编号标签名</label>
               <input value={flipCard.numberTag} onChange={(e) => updateFlipCard({ numberTag: e.target.value })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm font-mono text-foreground" />
             </div>
-          </div>
-          <p className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 leading-relaxed">
-            💡 在角色卡 prompt 中使用 <code className="text-primary font-mono">&lt;{flipCard.frontTag}&gt;</code> 正面内容 <code className="text-primary font-mono">&lt;/{flipCard.frontTag}&gt;</code> 等标签包裹内容即可触发翻页效果。
-          </p>
-        </div>
-
-        {/* Card style - simplified */}
-        <div className="glass-panel p-4 space-y-3">
-          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">卡片样式</h4>
-          <SliderWithLabel label="圆角" value={flipCard.borderRadius} onChange={(v) => updateFlipCard({ borderRadius: v })} min={0} max={30} unit="px" />
-          <div className="flex items-center justify-between">
-            <label className="text-xs text-muted-foreground">卡片边框</label>
-            <div className="flex items-center gap-2">
-              <input type="checkbox" checked={flipCard.cardBorder} onChange={(e) => updateFlipCard({ cardBorder: e.target.checked })} className="accent-primary" />
-              {flipCard.cardBorder && (
-                <ColorPicker label="" value={flipCard.cardBorderColor} onChange={(v) => updateFlipCard({ cardBorderColor: v })} />
-              )}
-            </div>
-          </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">正面翻转提示</label>
-            <input value={flipCard.flipHint} onChange={(e) => updateFlipCard({ flipHint: e.target.value })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
-          </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">背面翻转提示</label>
-            <input value={flipCard.flipHintBack} onChange={(e) => updateFlipCard({ flipHintBack: e.target.value })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
           </div>
         </div>
 
@@ -161,12 +138,31 @@ export const FlipCardTab = () => {
           >
             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showCustom ? 'rotate-0' : '-rotate-90'}`} />
             自定义调整
+            <span className="text-[10px] ml-1 opacity-60">高级 · 预设已够用</span>
           </button>
 
           {showCustom && (
             <div className="space-y-3 pt-1">
               <ColorPicker label="正面背景色" value={typo.frontBg} onChange={(v) => updateTypo({ frontBg: v })} />
               <ColorPicker label="背面背景色" value={typo.backBg} onChange={(v) => updateTypo({ backBg: v })} />
+              <SliderWithLabel label="圆角" value={flipCard.borderRadius} onChange={(v) => updateFlipCard({ borderRadius: v })} min={0} max={30} unit="px" />
+              <div className="flex items-center justify-between">
+                <label className="text-xs text-muted-foreground">卡片边框</label>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" checked={flipCard.cardBorder} onChange={(e) => updateFlipCard({ cardBorder: e.target.checked })} className="accent-primary" />
+                  {flipCard.cardBorder && (
+                    <ColorPicker label="" value={flipCard.cardBorderColor} onChange={(v) => updateFlipCard({ cardBorderColor: v })} />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">正面翻转提示</label>
+                <input value={flipCard.flipHint} onChange={(e) => updateFlipCard({ flipHint: e.target.value })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">背面翻转提示</label>
+                <input value={flipCard.flipHintBack} onChange={(e) => updateFlipCard({ flipHintBack: e.target.value })} className="w-full bg-input border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
+              </div>
               <SliderWithLabel label="字号" value={typo.fontSize} onChange={(v) => updateTypo({ fontSize: v })} min={12} max={20} step={0.5} unit="px" />
               <SliderWithLabel label="行高" value={typo.lineHeight} onChange={(v) => updateTypo({ lineHeight: v })} min={1.2} max={2.2} step={0.05} unit="" />
               <SliderWithLabel label="字间距" value={typo.letterSpacing} onChange={(v) => updateTypo({ letterSpacing: v })} min={0} max={2} step={0.1} unit="px" />
