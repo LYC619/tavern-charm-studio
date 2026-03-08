@@ -7,7 +7,8 @@ import type { StatusField, GroupLayout } from '@/types';
 
 const SAMPLE_VALUES: Record<string, string> = {
   '时间': '傍晚', '地点': '学校走廊', '服装': '校服', '心情': '开心',
-  '生命值': '80', '魔力': '45', '体力': '60',
+  '生命值': '80', '魔力': '45', '体力': '60', '金币': '120',
+  '装备': '铁剑', '状态': '正常', '技能': '火球术',
 };
 
 const LAYOUT_OPTIONS: { value: GroupLayout; label: string }[] = [
@@ -17,9 +18,43 @@ const LAYOUT_OPTIONS: { value: GroupLayout; label: string }[] = [
   { value: 'highlight', label: '单字段高亮式' },
 ];
 
+const QUICK_TEMPLATES = [
+  {
+    name: '🎮 RPG 冒险',
+    fields: [
+      { name: '生命值', type: 'progress' as const, group: '战斗属性' },
+      { name: '魔力', type: 'progress' as const, group: '战斗属性' },
+      { name: '体力', type: 'progress' as const, group: '战斗属性' },
+      { name: '金币', type: 'text' as const, group: '物品' },
+      { name: '装备', type: 'text' as const, group: '物品' },
+      { name: '状态', type: 'badge' as const, group: '状态' },
+    ],
+  },
+  {
+    name: '🏫 校园日常',
+    fields: [
+      { name: '时间', type: 'text' as const, group: '基本信息' },
+      { name: '地点', type: 'text' as const, group: '基本信息' },
+      { name: '心情', type: 'badge' as const, group: '状态' },
+      { name: '服装', type: 'text' as const, group: '外观' },
+    ],
+  },
+  {
+    name: '🧙 奇幻世界',
+    fields: [
+      { name: '时间', type: 'text' as const, group: '环境' },
+      { name: '地点', type: 'text' as const, group: '环境' },
+      { name: '装备', type: 'text' as const, group: '装备' },
+      { name: '状态', type: 'badge' as const, group: '角色状态' },
+      { name: '技能', type: 'text' as const, group: '角色状态' },
+    ],
+  },
+];
+
 export const StatusPanelTab = () => {
   const { statusPanel, updateStatusPanel, addField, updateField, removeField, getGroupConfig, updateGroupConfig } = useAppStore();
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [showStyleSettings, setShowStyleSettings] = useState(false);
 
   const toggleGroup = (g: string) => {
     setCollapsedGroups(prev => {
@@ -27,6 +62,15 @@ export const StatusPanelTab = () => {
       next.has(g) ? next.delete(g) : next.add(g);
       return next;
     });
+  };
+
+  const applyTemplate = (template: typeof QUICK_TEMPLATES[0]) => {
+    const fields = template.fields.map(f => ({
+      id: crypto.randomUUID(),
+      ...f,
+    }));
+    const groups = [...new Set(fields.map(f => f.group))];
+    updateStatusPanel({ fields, groupOrder: groups });
   };
 
   // Build ordered groups
@@ -138,7 +182,23 @@ export const StatusPanelTab = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       <div className="lg:w-1/2 space-y-4 overflow-y-auto max-h-[calc(100vh-8rem)]">
-        {/* Global settings */}
+        {/* Quick templates */}
+        <div className="glass-panel p-4 space-y-3">
+          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">快速模板</h4>
+          <div className="flex gap-2 flex-wrap">
+            {QUICK_TEMPLATES.map(t => (
+              <button
+                key={t.name}
+                onClick={() => applyTemplate(t)}
+                className="preset-btn"
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Panel title */}
         <div className="glass-panel p-4 space-y-3">
           <div>
             <label className="text-xs text-muted-foreground mb-1 block">面板标题</label>
@@ -150,18 +210,34 @@ export const StatusPanelTab = () => {
               {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}列</option>)}
             </select>
           </div>
-          <ColorPicker label="背景颜色" value={statusPanel.bgColor} onChange={(v) => updateStatusPanel({ bgColor: v })} />
-          <ColorPicker label="字段值颜色" value={statusPanel.valueColor} onChange={(v) => updateStatusPanel({ valueColor: v })} />
-          <ColorPicker label="字段名颜色" value={statusPanel.labelColor} onChange={(v) => updateStatusPanel({ labelColor: v })} />
-          <SliderWithLabel label="圆角" value={statusPanel.borderRadius} onChange={(v) => updateStatusPanel({ borderRadius: v })} min={0} max={24} unit="px" />
-          <label className="flex items-center gap-2 text-xs text-muted-foreground">
-            <input type="checkbox" checked={statusPanel.showBorder} onChange={(e) => updateStatusPanel({ showBorder: e.target.checked })} className="accent-primary" />
-            显示边框
-          </label>
-          <label className="flex items-center gap-2 text-xs text-muted-foreground">
-            <input type="checkbox" checked={statusPanel.showGroupTitle} onChange={(e) => updateStatusPanel({ showGroupTitle: e.target.checked })} className="accent-primary" />
-            显示分组标题
-          </label>
+        </div>
+
+        {/* Style settings - collapsed */}
+        <div className="glass-panel p-4">
+          <button
+            onClick={() => setShowStyleSettings(!showStyleSettings)}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full"
+          >
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showStyleSettings ? 'rotate-0' : '-rotate-90'}`} />
+            样式设置
+            <span className="text-[10px] ml-1 opacity-60">可选 · 不调整也能正常使用</span>
+          </button>
+          {showStyleSettings && (
+            <div className="space-y-3 pt-3">
+              <ColorPicker label="背景颜色" value={statusPanel.bgColor} onChange={(v) => updateStatusPanel({ bgColor: v })} />
+              <ColorPicker label="字段值颜色" value={statusPanel.valueColor} onChange={(v) => updateStatusPanel({ valueColor: v })} />
+              <ColorPicker label="字段名颜色" value={statusPanel.labelColor} onChange={(v) => updateStatusPanel({ labelColor: v })} />
+              <SliderWithLabel label="圆角" value={statusPanel.borderRadius} onChange={(v) => updateStatusPanel({ borderRadius: v })} min={0} max={24} unit="px" />
+              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                <input type="checkbox" checked={statusPanel.showBorder} onChange={(e) => updateStatusPanel({ showBorder: e.target.checked })} className="accent-primary" />
+                显示边框
+              </label>
+              <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                <input type="checkbox" checked={statusPanel.showGroupTitle} onChange={(e) => updateStatusPanel({ showGroupTitle: e.target.checked })} className="accent-primary" />
+                显示分组标题
+              </label>
+            </div>
+          )}
         </div>
 
         {/* Group configs */}
@@ -206,7 +282,7 @@ export const StatusPanelTab = () => {
                       分组间显示分隔线
                     </label>
 
-                    {/* Fields in this group */}
+                    {/* Fields - compact inline */}
                     {gFields.map(field => (
                       <div key={field.id} className="flex items-center gap-1.5">
                         <input value={field.name} onChange={(e) => updateField(field.id, { name: e.target.value })} className="flex-1 min-w-[60px] bg-input border border-border rounded-md px-2 py-0.5 text-xs text-foreground" placeholder="字段名" />
