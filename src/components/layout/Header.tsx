@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/stores/useAppStore';
 import { SettingsDrawer } from '@/components/layout/SettingsDrawer';
+import { FullPreviewOverlay } from '@/components/shared/FullPreviewOverlay';
 import type { TabId } from '@/types';
 
 const TABS: { id: TabId; icon: string; label: string }[] = [
