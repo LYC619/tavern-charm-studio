@@ -1,15 +1,53 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Trash2, ChevronDown, ChevronRight } from 'lucide-react';
 import { useAppStore } from '@/stores/useAppStore';
 import { ColorPicker } from '@/components/shared/ColorPicker';
 import { SliderWithLabel } from '@/components/shared/SliderWithLabel';
 import type { StatusField, GroupLayout } from '@/types';
 
-const SAMPLE_VALUES: Record<string, string> = {
+export const DEFAULT_SAMPLE_VALUES: Record<string, string> = {
   '时间': '傍晚', '地点': '学校走廊', '服装': '校服', '心情': '开心',
   '生命值': '80', '魔力': '45', '体力': '60', '金币': '120',
   '装备': '铁剑', '状态': '正常', '技能': '火球术',
 };
+
+/** Inline-editable value cell for preview */
+function EditableValue({ fieldName, value, color, fontSize, style, sampleValues, onUpdate }: {
+  fieldName: string; value: string; color: string; fontSize: number;
+  style?: React.CSSProperties; sampleValues: Record<string, string>;
+  onUpdate: (name: string, val: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+
+  const commit = useCallback(() => {
+    setEditing(false);
+    onUpdate(fieldName, draft);
+  }, [fieldName, draft, onUpdate]);
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        value={draft}
+        onChange={e => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e => e.key === 'Enter' && commit()}
+        style={{ ...style, color, fontSize, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 4, padding: '1px 4px', outline: 'none', width: '100%', textAlign: 'inherit' }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onDoubleClick={() => { setDraft(value); setEditing(true); }}
+      style={{ ...style, color, fontSize, cursor: 'default' }}
+      title="双击编辑示例值"
+    >
+      {value}
+    </span>
+  );
+}
 
 const LAYOUT_OPTIONS: { value: GroupLayout; label: string }[] = [
   { value: 'grid', label: '网格平铺' },
