@@ -1,73 +1,47 @@
-# Welcome to your Lovable project
+# SillyTavern 正则脚本可视化工具
 
-## Project info
+一款基于 React 的可视化编辑器，用于生成 SillyTavern（酒馆）角色卡的正则替换美化脚本。无需手写正则和 HTML，通过图形界面配置即可导出可直接导入酒馆的 JSON 脚本。
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## ✨ 功能模块
 
-## How can I edit this code?
+| 模块 | 说明 |
+|------|------|
+| 🎭 对话气泡 | 3 种预设风格（竖线/卡片/引用块）、角色主题色、头像模式 |
+| ✨ 文字特效 | 心理活动、旁白等特殊文本的视觉效果 |
+| 📊 状态面板 | 分组独立布局（网格/标签/紧凑/高亮），支持分组级列数配置 |
+| 🔄 翻页卡片 | 正面叙述 + 背面状态面板，4 种排版预设（Claude/小说/轻量/赛博） |
+| 📝 格式化提示词 | Prompt 模板编辑 |
+| 📦 导出中心 | 一键导出 ZIP，自动排列脚本执行顺序 |
 
-There are several ways of editing your application.
+## 🛠️ 技术栈
 
-**Use Lovable**
+- **框架**：React 18 + TypeScript + Vite
+- **UI**：Tailwind CSS + shadcn/ui
+- **状态管理**：Zustand
+- **动画**：Framer Motion
+- **导出**：JSZip
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🚀 本地开发
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 📦 部署
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+在 [Lovable](https://lovable.dev) 中打开项目，点击 Share → Publish 即可发布。
 
-**Use GitHub Codespaces**
+支持自定义域名：Project → Settings → Domains → Connect Domain。
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📋 更新记录
 
-## What technologies are used for this project?
+完整更新记录请查看 [CHANGELOG.md](./CHANGELOG.md)。
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+| 版本 | 日期 | 摘要 |
+|------|------|------|
+| v0.3.0 | 2026-03-08 | 翻页卡片背景方案重构，删除渐变配置，背景整合进排版预设 |
+| v0.2.0 | 2026-03-08 | 正文排版预设系统（Claude/小说/轻量/赛博 4 种风格） |
+| v0.1.0 | 2026-03-08 | UI 优化第一轮：对话气泡重构、状态面板分组布局、导出脚本排序 |
