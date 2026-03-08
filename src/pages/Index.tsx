@@ -18,6 +18,7 @@ const TAB_COMPONENTS = {
   textEffect: TextEffectTab,
   flipCard: FlipCardTab,
   formatPrompt: FormatPromptTab,
+  regexTest: RegexTestTab,
   export: ExportCenter,
   guide: GuideTab,
 } as const;
