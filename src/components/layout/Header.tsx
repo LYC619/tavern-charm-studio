@@ -5,14 +5,14 @@ import { FullPreviewOverlay } from '@/components/shared/FullPreviewOverlay';
 import type { TabId } from '@/types';
 
 const TABS: { id: TabId; icon: string; label: string }[] = [
-  { id: 'dialog', icon: '🎨', label: '对话气泡' },
+  { id: 'dialog', icon: '💬', label: '对话气泡' },
   { id: 'status', icon: '📊', label: '状态面板' },
   { id: 'textEffect', icon: '✨', label: '文字特效' },
-  { id: 'flipCard', icon: '📑', label: '翻页卡片' },
-  { id: 'formatPrompt', icon: '📝', label: '格式提示词' },
-  { id: 'regexTest', icon: '🧪', label: '正则测试' },
-  { id: 'export', icon: '📦', label: '导出中心' },
-  { id: 'guide', icon: '📖', label: '使用说明' },
+  { id: 'flipCard', icon: '🔄', label: '翻页卡片' },
+  { id: 'formatPrompt', icon: '📝', label: '格式词' },
+  { id: 'regexTest', icon: '🧪', label: '测试' },
+  { id: 'export', icon: '📦', label: '导出' },
+  { id: 'guide', icon: '❓', label: '帮助' },
 ];
 
 export const Header = () => {
