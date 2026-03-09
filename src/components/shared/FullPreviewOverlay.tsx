@@ -149,8 +149,7 @@ function StatusPanelPreview({ config }: { config: StatusPanelConfig }) {
                           <span style={{ color: config.valueColor, fontSize: 11 }}>{val}</span>
                         </div>
                       );
-                    })()
-                    ) : f.type === 'badge' ? (
+                    })() : f.type === 'badge' ? (
                       <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: 12, background: config.valueColor + '33', color: config.valueColor, fontSize: 12 }}>{DEFAULT_SAMPLE_VALUES[f.name] || '示例值'}</span>
                     ) : (
                       <span style={{ color: config.valueColor, fontSize: 14 }}>{DEFAULT_SAMPLE_VALUES[f.name] || '示例值'}</span>
