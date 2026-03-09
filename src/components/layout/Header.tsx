@@ -5,14 +5,14 @@ import { FullPreviewOverlay } from '@/components/shared/FullPreviewOverlay';
 import type { TabId } from '@/types';
 
 const TABS: { id: TabId; icon: string; label: string }[] = [
-  { id: 'dialog', icon: '🎨', label: '对话气泡' },
+  { id: 'dialog', icon: '💬', label: '对话气泡' },
   { id: 'status', icon: '📊', label: '状态面板' },
   { id: 'textEffect', icon: '✨', label: '文字特效' },
-  { id: 'flipCard', icon: '📑', label: '翻页卡片' },
-  { id: 'formatPrompt', icon: '📝', label: '格式提示词' },
-  { id: 'regexTest', icon: '🧪', label: '正则测试' },
-  { id: 'export', icon: '📦', label: '导出中心' },
-  { id: 'guide', icon: '📖', label: '使用说明' },
+  { id: 'flipCard', icon: '🔄', label: '翻页卡片' },
+  { id: 'formatPrompt', icon: '📝', label: '格式词' },
+  { id: 'regexTest', icon: '🧪', label: '测试' },
+  { id: 'export', icon: '📦', label: '导出' },
+  { id: 'guide', icon: '❓', label: '帮助' },
 ];
 
 export const Header = () => {
@@ -23,7 +23,7 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center h-14 gap-4">
           <h1 className="text-sm font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent hidden md:block whitespace-nowrap">
-            酒馆正则美化工作室
+            Charm ST
           </h1>
           <nav className="flex gap-0.5 overflow-x-auto flex-1 scrollbar-none">
             {TABS.map(tab => (

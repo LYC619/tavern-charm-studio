@@ -129,14 +129,27 @@ function StatusPanelPreview({ config }: { config: StatusPanelConfig }) {
                 {gFields.map(f => (
                   <div key={f.id} style={{ padding: '6px 8px', textAlign: 'center' }}>
                     <div style={{ fontSize: 12, color: config.labelColor, marginBottom: 2 }}>{f.name}</div>
-                    {f.type === 'progress' ? (
-                      <div>
-                        <div style={{ width: '100%', height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.1)' }}>
-                          <div style={{ width: '60%', height: '100%', borderRadius: 3, background: config.valueColor }} />
+                    {f.type === 'progress' ? (() => {
+                      const val = DEFAULT_SAMPLE_VALUES[f.name] || '50%';
+                      let pct = 50;
+                      if (val.includes('/')) {
+                        const parts = val.split('/');
+                        const num = parseInt(parts[0]);
+                        const den = parseInt(parts[1]);
+                        if (den > 0) pct = Math.round((num / den) * 100);
+                      } else {
+                        const num = parseInt(val);
+                        if (!isNaN(num)) pct = Math.min(100, num);
+                      }
+                      return (
+                        <div>
+                          <div style={{ width: '100%', height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.1)' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', borderRadius: 3, background: config.valueColor }} />
+                          </div>
+                          <span style={{ color: config.valueColor, fontSize: 11 }}>{val}</span>
                         </div>
-                        <span style={{ color: config.valueColor, fontSize: 11 }}>60%</span>
-                      </div>
-                    ) : f.type === 'badge' ? (
+                      );
+                    })() : f.type === 'badge' ? (
                       <span style={{ display: 'inline-block', padding: '2px 8px', borderRadius: 12, background: config.valueColor + '33', color: config.valueColor, fontSize: 12 }}>{DEFAULT_SAMPLE_VALUES[f.name] || '示例值'}</span>
                     ) : (
                       <span style={{ color: config.valueColor, fontSize: 14 }}>{DEFAULT_SAMPLE_VALUES[f.name] || '示例值'}</span>
@@ -190,17 +203,18 @@ export const FullPreviewOverlay = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center"
+        className="fixed inset-0 z-50 overflow-y-auto"
         style={{ background: '#1a1c2e' }}
       >
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-4 right-4 z-10 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 text-foreground transition-colors"
+          className="fixed top-4 right-4 z-10 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 text-foreground transition-colors"
         >
           <X size={20} />
         </button>
 
-        <div className="w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="min-h-full flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
           <div className="text-center text-xs text-muted-foreground mb-4">完整预览 · 模拟 SillyTavern 显示效果 · 点击卡片翻面</div>
 
           <motion.div
@@ -268,6 +282,7 @@ export const FullPreviewOverlay = () => {
           <div className="text-center text-xs text-muted-foreground mt-4">
             当前显示：{showFront ? '正面（对话内容）' : '背面（状态面板）'} · 点击切换
           </div>
+        </div>
         </div>
       </motion.div>
     </AnimatePresence>
