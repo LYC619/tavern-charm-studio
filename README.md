@@ -22,6 +22,30 @@
 - 引导系统 — 全屏欢迎页 + 三步向导（选风格 → 填角色 → 导出说明）
 - 使用说明 — 工作原理、导入步骤、FAQ
 
+## 部署
+
+### Vercel 一键部署
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/alaka01/tavern-charm-studio)
+
+### 本地运行
+
+```bash
+git clone https://github.com/alaka01/tavern-charm-studio.git
+cd tavern-charm-studio
+npm install
+npm run dev
+```
+
+### Docker
+
+```bash
+docker build -t tavern-charm-studio .
+docker run -d -p 8080:80 tavern-charm-studio
+```
+
+访问 http://localhost:8080
+
 ## 使用方式
 
 1. 打开工具，跟随向导选择风格并填写角色名
