@@ -270,6 +270,7 @@ export const FullPreviewOverlay = () => {
             当前显示：{showFront ? '正面（对话内容）' : '背面（状态面板）'} · 点击切换
           </div>
         </div>
+        </div>
       </motion.div>
     </AnimatePresence>
   );
